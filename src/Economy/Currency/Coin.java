@@ -20,44 +20,62 @@ public class Coin extends Currency {
         super(name, CType.Coin, price, dividend, data, Up, Down);
     }
 
+    /**
+     * Coin Count
+     */
     private double Count = 0;
-
+    /**
+     * Get a Coin Count
+     * @return
+     */
     public double getCount() { return Count; }
     
     @Override
     public long Count() {
-        System.out.println("코인에서는 Count()함수를 사용할 수 없습니다.\n Count() => get");
+        System.out.println("코인에서는 Count()함수를 사용할 수 없습니다.\nCount() => get");
         return -1;
     }
 
+    /**
+     * Full Buy
+     */
     @Override
     public boolean Buy() {
         double Count = MyAccount.Money() / super.Price;
         return Buy(Count);
     }
 
+    /**
+     * Count Buy
+     */
     @Override
     public boolean Buy(long count) {
-        return Buy((double)Count);
+        return Buy((double)count);
     }
 
+    /**
+     * PercentBuy
+     */
     @Override
     public boolean Buy(float Percent) {
-        double Count = MyAccount.Money() / super.Price * Percent;
-        return Buy(Count);
+        double count = (MyAccount.Money() / super.Price) * Percent;
+        return Buy(count);
     }
 
+    /**
+     * double Count Buy
+     */
     @Override
-    public boolean Buy(double Count)
+    public boolean Buy(double count)
     {
-        if(Count < 0 || Count * super.Price > MyAccount.Money())
+        if(count <= 0 || count * super.Price > MyAccount.Money())
         {
             System.out.println("구매할 수 있는 수량이 아닙니다.");
             return false;
         }
 
         // count
-        this.Count += Count;
+        this.Count += count;
 
         // Buy
         super.BuyPrice = super.Price();
@@ -69,33 +87,52 @@ public class Coin extends Currency {
             super.AveragePrice = (super.AveragePrice + super.Price) / 2.0;
 
         // myaccount
-        MyAccount.Money(-(long) (Count * super.Price));
+        MyAccount.Money(-(long) (count * super.Price));
         if(!MyAccount.InvestCoin.contains(this))
             MyAccount.InvestCoin.add(this);
 
         return true;
     }
 
+    /**
+     * Full Sell
+     */
     @Override
     public boolean Sell() {
         return Sell(this.Count);
     }
-
+    
+    /**
+     * Count Sell
+     */
     @Override
     public boolean Sell(long count) {
         return Sell((double) count);
     }
 
+    /**
+     * Percent Sell
+     */
     @Override
     public boolean Sell(float Percent) {
-        return Sell((double) Percent);
+        long count = (long) (this.Count * Percent * 10000);
+        return Sell(count / 10000.0);
     }
 
+    /**
+     * double Count Sell
+     */
     @Override
     public boolean Sell(double Count) {
+
         if(Count < 0 || this.Count < Count)
         {
             System.out.println("판매할 수 있는 수량이 아닙니다.");
+            return false;
+        }
+        if(this.Count == 0)
+        {
+            System.out.println("가지고 있는 자산이 아닙니다.");
             return false;
         }
 
@@ -120,5 +157,9 @@ public class Coin extends Currency {
         return true;
     }
 
+    @Override
+    public long getSellMoney() {
+        return (long) (this.Count * super.Price);
+    }
     
 }

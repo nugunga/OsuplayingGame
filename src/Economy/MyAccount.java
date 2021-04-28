@@ -24,6 +24,7 @@ public class MyAccount {
 
     private static long UseLoan;
     public static long UseLoan() { return MyAccount.UseLoan; }
+    public static void UseLoan(long money) { MyAccount.UseLoan += money; }
 
 
     public enum CreditRating
@@ -44,6 +45,7 @@ public class MyAccount {
         InvestCoin = new ArrayList<>();
         InvestStock = new ArrayList<>();
         InvestEstate = new ArrayList<>();
+        Update();
     }
 
     public static void Update()

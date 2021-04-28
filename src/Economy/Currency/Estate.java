@@ -7,7 +7,7 @@ import Economy.Currency.CurrencyType.CType;
 
 public class Estate extends Currency {
 
-    public Estate(String name, long price, long dividend, List<String> data, double up, double down, EstateType type) {
+    public Estate(String name, long price, double dividend, List<String> data, double up, double down, EstateType type) {
         super(name, CType.Estate, price, dividend, data, up, down);
         this.Type = type;
     }
@@ -16,8 +16,18 @@ public class Estate extends Currency {
     {
         Building,
         House,
-        land,
+        Land,
         None
+    }
+
+    public static EstateType StringToEType(String Type)
+    {
+        switch (Type) {
+            case "Building": return EstateType.Building;
+            case "House": return EstateType.House;
+            case "Land": return EstateType.Land;
+            default : return EstateType.None;
+        }
     }
 
     private EstateType Type;
@@ -28,11 +38,12 @@ public class Estate extends Currency {
     public void Loan(long money) 
     { 
         this.Loan -= money;
+        MyAccount.UseLoan(money);
     }
 
     @Override
     public boolean Buy() {
-        if(Math.abs(MyAccount.Money() - super.Price) >= MyAccount.Loan())
+        if(Math.abs(MyAccount.Money() - super.Price - MyAccount.UseLoan()) >= MyAccount.Loan())
         {
             System.out.println("집의 가격이 현금과 대출의 돈보다 많습니다.");
             return false;
@@ -42,6 +53,7 @@ public class Estate extends Currency {
         if(MyAccount.Money() < 0)
         {
             this.Loan = Math.abs(MyAccount.Money());
+            MyAccount.UseLoan(this.Loan);
             MyAccount.Money(Math.abs(MyAccount.Money()));
         }
 
@@ -71,7 +83,27 @@ public class Estate extends Currency {
 
     @Override
     public boolean Sell() {
-        return false;
+        if(super.Count == 0)
+        {
+            System.out.println("가지고 있는 자산이 아닙니다.");
+            return false;
+        }
+        
+        // Money
+        MyAccount.Money(super.Price - this.Loan);
+        this.Loan = 0;
+
+        // Count
+        super.Count = 0;
+
+        // Price
+        super.AveragePrice = 0;
+        super.BuyPrice = 0;
+
+        MyAccount.InvestEstate.remove(this);
+        MyAccount.UseLoan(-this.Loan);
+
+        return true;
     }
 
     @Override

@@ -16,7 +16,7 @@ public class Stock extends Currency {
      * @param Up Up Percent
      * @param Down Down Percent
      */
-    public Stock(String name, long price, long dividend, List<String> data, double Up, double Down) {
+    public Stock(String name, long price, double dividend, List<String> data, double Up, double Down) {
         super(name, CType.Stock, price, dividend, data, Up, Down);
     }
 
@@ -28,7 +28,7 @@ public class Stock extends Currency {
 
     @Override
     public boolean Buy(long count) {
-        if(count <= 0 || count < MyAccount.Money() / super.Price)
+        if(count <= 0 || count > MyAccount.Money() / super.Price)
         {
             System.out.println("구매할 수 없는 수량입니다.");
             return false;
@@ -57,6 +57,7 @@ public class Stock extends Currency {
     @Override
     public boolean Buy(float Percent) {
         long count = (long) (MyAccount.Money() / super.Price * Percent);
+        System.out.println(count);
         return Buy(count);
     }
 
@@ -75,6 +76,11 @@ public class Stock extends Currency {
         if(count <= 0 || count > super.Count)
         {
             System.out.println("판매할 수 있는 수량이 아닙니다.");
+            return false;
+        }
+        if(super.Count == 0)
+        {
+            System.out.println("가지고 있는 자산이 아닙니다.");
             return false;
         }
 
@@ -101,7 +107,7 @@ public class Stock extends Currency {
 
     @Override
     public boolean Sell(float Percent) {
-        return Sell(this.Count * Percent);
+        return Sell((long) (this.Count * Percent));
     }
 
     @Override

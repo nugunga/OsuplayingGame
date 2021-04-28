@@ -100,29 +100,6 @@ public abstract class Currency implements IOthor, ISellAndBuy {
     protected long Count;
     public long Count() { return this.Count; }
 
-
-    /**
-     * Currency
-     * @param name Name
-     * @param price Price
-     * @param dividend Dividend
-     * @param data Information Data
-     * @param Up Up Percent
-     * @param Down Down Percent
-     */
-    public Currency(String name, CType type, long price, long dividend, List<String> data, double up, double down)
-    {
-        this.Name = name;
-        this.Type = new CurrencyType(type);
-        this.Price = price;
-        this.RecentPrice = 0;
-        this.BuyPrice = 0;
-        this.AveragePrice = 0;
-        this.Dividend = dividend;
-        this.InformationData = data;
-        this.Count = 0;
-    }
-
     /**
      * Currency
      * @param name Name
@@ -143,6 +120,15 @@ public abstract class Currency implements IOthor, ISellAndBuy {
         this.Dividend = dividend;
         this.InformationData = data;
         this.Count = 0;
+    }
+
+    /**
+     * Sell Money Get
+     * @return Sell Money
+     */
+    public long getSellMoney()
+    {
+        return this.Price * this.Count;
     }
 
     @Override
