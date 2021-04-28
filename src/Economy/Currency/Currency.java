@@ -132,11 +132,11 @@ public abstract class Currency implements IOthor, ISellAndBuy {
      * @param Up Up Percent
      * @param Down Down Percent
      */
-    public Currency(String name, CType type, double price, double dividend, List<String> data, double up, double down)
+    public Currency(String name, CType type, long price, double dividend, List<String> data, double up, double down)
     {
         this.Name = name;
         this.Type = new CurrencyType(type);
-        this.Price = 0;
+        this.Price = price;
         this.RecentPrice = 0;
         this.BuyPrice = 0;
         this.AveragePrice = 0;
