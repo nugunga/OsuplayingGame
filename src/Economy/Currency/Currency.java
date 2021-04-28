@@ -42,31 +42,15 @@ public abstract class Currency implements IOthor, ISellAndBuy {
     protected long Price;
     
     /**
-     * Convert Now Price
-     */
-    protected Double DPrice;
-
-    /**
      * Get a Standard Price
      * @return Standard Price
      */
     public long Price() { return this.Price; }
 
     /**
-     * Now DPrice add Price
-     * @return Double Price;
-     */
-    protected double DPrice() { return this.DPrice; }
-
-    /**
      * Recent Price Standard
      */
     protected long RecentPrice;
-
-    /**
-     * Convert RecentPrice to double
-     */
-    protected double DRecentPrice;
 
     /**
      * Get a RecentPrice
@@ -75,32 +59,15 @@ public abstract class Currency implements IOthor, ISellAndBuy {
     public long RecentPrice() { return this.RecentPrice; }
 
     /**
-     * Get a DRecentPrice
-     * @return DRecentPrice
-     */
-    protected double DRecentPrice() { return this.DRecentPrice(); }
-
-    /**
      * Buy a Price Standard
      */
     protected long BuyPrice;
-
-    /**
-     * Buy a Price to double
-     */
-    protected double DBuyPrice;
 
     /**
      * Get a Buy a Price
      * @return BuyPrice
      */
     public long BuyPrice() { return this.BuyPrice; }
-
-    /**
-     * Get a Buy a DBuyPrice
-     * @return DBuyPrice
-     */
-    protected double DBuyPrice() { return this.DBuyPrice; }
 
     /**
      * Average Price Standard
@@ -148,11 +115,8 @@ public abstract class Currency implements IOthor, ISellAndBuy {
         this.Name = name;
         this.Type = new CurrencyType(type);
         this.Price = price;
-        this.DPrice = (double) price;
         this.RecentPrice = 0;
-        this.DRecentPrice = 0;
         this.BuyPrice = 0;
-        this.DBuyPrice = 0;
         this.AveragePrice = 0;
         this.Dividend = dividend;
         this.InformationData = data;
@@ -173,11 +137,8 @@ public abstract class Currency implements IOthor, ISellAndBuy {
         this.Name = name;
         this.Type = new CurrencyType(type);
         this.Price = 0;
-        this.DPrice = price;
         this.RecentPrice = 0;
-        this.DRecentPrice = 0;
         this.BuyPrice = 0;
-        this.DBuyPrice = 0;
         this.AveragePrice = 0;
         this.Dividend = dividend;
         this.InformationData = data;

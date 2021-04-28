@@ -40,7 +40,15 @@ public class Coin extends Currency {
     @Override
     public boolean Buy(double Count)
     {
-        return false;
+        if(Count < 0 || Count * super.DPrice > MyAccount.Money())
+        {
+            System.out.println("구매할 수 있는 수량이 아닙니다.");
+            return false;
+        }
+
+        super.DCount += Count;
+
+        return true;
     }
 
     @Override
