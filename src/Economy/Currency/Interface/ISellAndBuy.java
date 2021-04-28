@@ -10,16 +10,16 @@ public interface ISellAndBuy {
 
     public boolean Buy(long count);
 
-    public boolean Buy(float Percent);
+    public boolean Buy(float percent);
 
-    public boolean Buy(double Count);
+    public boolean Buy(double count);
 
     public boolean Sell();
 
     public boolean Sell(long count);
 
-    public boolean Sell(float Percent);
+    public boolean Sell(float percent);
 
-    public boolean Sell(double Count);
+    public boolean Sell(double count);
     
 }

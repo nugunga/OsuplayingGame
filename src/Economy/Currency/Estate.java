@@ -2,61 +2,91 @@ package Economy.Currency;
 
 import java.util.List;
 
+import Economy.MyAccount;
 import Economy.Currency.CurrencyType.CType;
 
 public class Estate extends Currency {
 
-    public Estate(String name, long price, long dividend, List<String> data, double up, double down) {
+    public Estate(String name, long price, long dividend, List<String> data, double up, double down, EstateType type) {
         super(name, CType.Estate, price, dividend, data, up, down);
-        //TODO Auto-generated constructor stub
+        this.Type = type;
+    }
+
+    public enum EstateType
+    {
+        Building,
+        House,
+        land,
+        None
+    }
+
+    private EstateType Type;
+    public final EstateType EstateType() { return this.Type; }
+
+    private long Loan;
+    public long Loan() { return this.Loan; } 
+    public void Loan(long money) 
+    { 
+        this.Loan -= money;
     }
 
     @Override
     public boolean Buy() {
-        // TODO Auto-generated method stub
-        return false;
+        if(Math.abs(MyAccount.Money() - super.Price) >= MyAccount.Loan())
+        {
+            System.out.println("집의 가격이 현금과 대출의 돈보다 많습니다.");
+            return false;
+        }
+
+        MyAccount.Money(-super.Price);
+        if(MyAccount.Money() < 0)
+        {
+            this.Loan = Math.abs(MyAccount.Money());
+            MyAccount.Money(Math.abs(MyAccount.Money()));
+        }
+
+        super.AveragePrice = super.Price;
+        super.BuyPrice = super.Price;
+        super.Count = 1;
+
+        if(!MyAccount.InvestEstate.contains(this))
+            MyAccount.InvestEstate.add(this);
+        return true;
     }
 
     @Override
     public boolean Buy(long count) {
-        // TODO Auto-generated method stub
-        return false;
+        return Buy();
     }
 
     @Override
     public boolean Buy(float Percent) {
-        // TODO Auto-generated method stub
-        return false;
+        return Buy();
     }
 
     @Override
     public boolean Buy(double Count) {
-        // TODO Auto-generated method stub
-        return false;
+        return Buy();
     }
 
     @Override
     public boolean Sell() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean Sell(long count) {
-        // TODO Auto-generated method stub
-        return false;
+        return Sell();
     }
 
     @Override
     public boolean Sell(float Percent) {
-        // TODO Auto-generated method stub
-        return false;
+        return Sell();
     }
 
     @Override
     public boolean Sell(double Count) {
-        // TODO Auto-generated method stub
-        return false;
+        return Sell();
     }
     
 }
