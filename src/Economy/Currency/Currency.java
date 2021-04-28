@@ -134,7 +134,6 @@ public abstract class Currency implements IOthor, ISellAndBuy {
     @Override
     public void Information()
     {
-        
     }
 
     @Override
