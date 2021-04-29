@@ -10,7 +10,7 @@ public class CurrencyType
     /**
      * Currency Type Original
      */
-    enum CType 
+    public enum CType 
     {
         Stock,
         Coin,
@@ -26,7 +26,7 @@ public class CurrencyType
      * Get a Type
      * @return Currency Type
      */
-    public CType Type() { return this.Type(); }
+    public CType Type() { return this.Type; }
 
     /**
      * Get a Type to String

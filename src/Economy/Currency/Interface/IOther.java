@@ -5,7 +5,7 @@ package Economy.Currency.Interface;
  * 
  * Made By Nugunga, 2021-04-28
  */
-public interface IOthor {
+public interface IOther {
     public void Update();
     public void Information();
 }

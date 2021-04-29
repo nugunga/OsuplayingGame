@@ -3,7 +3,7 @@ package Economy.Currency;
 import java.util.List;
 
 import Economy.Currency.CurrencyType.CType;
-import Economy.Currency.Interface.IOthor;
+import Economy.Currency.Interface.IOther;
 import Economy.Currency.Interface.ISellAndBuy;
 
 /**
@@ -11,7 +11,7 @@ import Economy.Currency.Interface.ISellAndBuy;
  * 
  * Made By Nugunga, 2021-04-28
  */
-public abstract class Currency implements IOthor, ISellAndBuy {
+public abstract class Currency implements IOther, ISellAndBuy {
     
     /**
      * Currency Name
@@ -92,7 +92,7 @@ public abstract class Currency implements IOthor, ISellAndBuy {
     protected double Dividend() { return this.Dividend; }
 
     /**
-     * Information Datas
+     * Information Data
      */
     private List<String> InformationData;
     
@@ -134,6 +134,7 @@ public abstract class Currency implements IOthor, ISellAndBuy {
     @Override
     public void Information()
     {
+
     }
 
     @Override
