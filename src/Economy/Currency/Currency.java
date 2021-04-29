@@ -97,8 +97,8 @@ public abstract class Currency implements IOther, ISellAndBuy {
     private List<String> InformationData;
     
 
-    protected long Count;
-    public long Count() { return this.Count; }
+    // protected long Count;
+    // public long Count() { return this.Count; }
 
     /**
      * Currency
@@ -119,16 +119,6 @@ public abstract class Currency implements IOther, ISellAndBuy {
         this.AveragePrice = 0;
         this.Dividend = dividend;
         this.InformationData = data;
-        this.Count = 0;
-    }
-
-    /**
-     * Sell Money Get
-     * @return Sell Money
-     */
-    public long getSellMoney()
-    {
-        return this.Price * this.Count;
     }
 
     @Override

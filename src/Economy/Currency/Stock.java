@@ -18,7 +18,11 @@ public class Stock extends Currency {
      */
     public Stock(String name, long price, double dividend, List<String> data, double Up, double Down) {
         super(name, CType.Stock, price, dividend, data, Up, Down);
+        this.Count = 0;
     }
+
+    private long Count;
+    public long Count() { return this.Count; };
 
     @Override
     public boolean Buy() {
@@ -35,7 +39,7 @@ public class Stock extends Currency {
         }
         
         // count
-        super.Count += count;
+        this.Count += count;
 
         // Buy
         super.BuyPrice = super.Price();
@@ -57,7 +61,6 @@ public class Stock extends Currency {
     @Override
     public boolean Buy(float Percent) {
         long count = (long) (MyAccount.Money() / super.Price * Percent);
-        System.out.println(count);
         return Buy(count);
     }
 
@@ -68,30 +71,30 @@ public class Stock extends Currency {
 
     @Override
     public boolean Sell() {
-        return Buy(super.Count);
+        return Buy(this.Count);
     }
 
     @Override
     public boolean Sell(long count) {
-        if(count <= 0 || count > super.Count)
+        if(count <= 0 || count > this.Count)
         {
             System.out.println("판매할 수 있는 수량이 아닙니다.");
             return false;
         }
-        if(super.Count == 0)
+        if(this.Count == 0)
         {
             System.out.println("가지고 있는 자산이 아닙니다.");
             return false;
         }
 
         // money
-        MyAccount.Money(count * super.Price);
+        MyAccount.Money(count * this.Price);
 
         // count
-        super.Count -= count;
+        this.Count -= count;
         
         // count == 0
-        if(super.Count == 0)
+        if(this.Count == 0)
         {
             if(MyAccount.InvestStock.contains(this))
                 MyAccount.InvestStock.remove(this);
@@ -114,5 +117,8 @@ public class Stock extends Currency {
     public boolean Sell(double Count) {
         return Sell((float) Count);
     }
+
+    @Override
+    public long getSellMoney() { return this.Count * super.Price; }
 }
 

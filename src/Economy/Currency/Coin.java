@@ -28,14 +28,8 @@ public class Coin extends Currency {
      * Get a Coin Count
      * @return
      */
-    public double getCount() { return Count; }
+    public double Count() { return Count; }
     
-    @Override
-    public long Count() {
-        System.out.println("코인에서는 Count()함수를 사용할 수 없습니다.\nCount() => get");
-        return -1;
-    }
-
     /**
      * Full Buy
      */

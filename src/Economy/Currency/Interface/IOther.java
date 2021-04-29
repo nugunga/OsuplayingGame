@@ -8,4 +8,5 @@ package Economy.Currency.Interface;
 public interface IOther {
     public void Update();
     public void Information();
+    public long getSellMoney();
 }

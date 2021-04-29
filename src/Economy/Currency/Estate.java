@@ -12,6 +12,9 @@ public class Estate extends Currency {
         this.Type = type;
     }
 
+    private boolean Count;
+    public long Count() { return Count ? 1 : 0; }
+
     public enum EstateType
     {
         Building,
@@ -59,7 +62,7 @@ public class Estate extends Currency {
 
         super.AveragePrice = super.Price;
         super.BuyPrice = super.Price;
-        super.Count = 1;
+        this.Count = true;
 
         if(!MyAccount.InvestEstate.contains(this))
             MyAccount.InvestEstate.add(this);
@@ -83,7 +86,7 @@ public class Estate extends Currency {
 
     @Override
     public boolean Sell() {
-        if(super.Count == 0)
+        if(!this.Count)
         {
             System.out.println("가지고 있는 자산이 아닙니다.");
             return false;
@@ -94,7 +97,7 @@ public class Estate extends Currency {
         this.Loan = 0;
 
         // Count
-        super.Count = 0;
+        this.Count = false;
 
         // Price
         super.AveragePrice = 0;
@@ -119,6 +122,10 @@ public class Estate extends Currency {
     @Override
     public boolean Sell(double Count) {
         return Sell();
+    }
+    @Override
+    public long getSellMoney() {
+        return super.Price - this.Loan;
     }
     
 }
