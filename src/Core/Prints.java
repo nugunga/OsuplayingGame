@@ -36,26 +36,6 @@ public class Prints {
         ShowDivider();
     }
 
-    public static void Show(String[] str, int start, int end)
-    {
-        ShowDivider();
-
-        for (int i = start - 1; i <= end - 1; i++)
-            System.out.println("| " + str[i]);
-
-        ShowDivider();
-    }
-
-    public static void Show(String[] str, int start, int end, int count)
-    {
-        ShowDivider();
-
-        for (int i = start - 1; i <= end - 1; i++)
-            System.out.println("|  " + (count++) +" : "+ str[i]);
-
-        ShowDivider();
-    }
-
     public static void Show(String[] str, boolean isNone)
     {
         ShowDivider();
@@ -95,6 +75,16 @@ public class Prints {
 
         for (String string : list)
             System.out.println("|  " + string);
+
+        ShowDivider();
+    }
+
+    public static void Show(List<String> list, int count)
+    {
+        ShowDivider();
+
+        for (String string : list)
+            System.out.println("|  " + (count++) +" : "+ string);
 
         ShowDivider();
     }

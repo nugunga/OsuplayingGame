@@ -159,7 +159,8 @@ public class SystemConsole {
     public SystemConsole()
     {
         SystemConsole.sc = new Scanner(System.in);
-        Hello();
+        if(!SystemConsole.isdebug)
+            Hello();
         init();
         String cmd = "";
         String[] Menu = 
@@ -167,14 +168,17 @@ public class SystemConsole {
             "시세",
             "구매",
             "판매",
-            "보유 자산"
+            "보유 자산",
+            "프로그램 종료"
         };
 
         do
         {
-            System.out.println("메뉴 >>> ");
+            Console.SmallInvestPrice();
+            
+            System.out.println("\n메뉴(명령어)");
             Core.Prints.Show(Menu, 1);
-            System.out.println("입력해주세요 Ex) 1, 시세 >>>"); cmd = sc.next();
+            System.out.print("입력해주세요 Ex) 1, 시세 >>> "); cmd = sc.next();
             
             switch (cmd)
             {
@@ -182,7 +186,7 @@ public class SystemConsole {
                 case "2", "구매": ClearConsole(); Console.Buy(); ClearConsole(""); break;
                 case "3", "판매": ClearConsole(); Console.Sell(); ClearConsole(""); break;
                 case "4", "보유 자산" : ClearConsole(); Console.InvestPrice(); ClearConsole(""); break;
-                case "X", "종료": System.exit(0); sc.close(); break;
+                case "5", "X", "종료", "프로그램 종료": System.exit(0); sc.close(); break;
                 default : ClearConsole("잘못된 멸령어입니다 : " + cmd + "\n");
             }
 

@@ -2,7 +2,7 @@
     "Coin" : 
     [
         { "name" : "Ganada", "price" : 5000, "dividend" : 0.05, "Up" : 0.05, "Down" : 0.06, "Information" : "ganada"},
-        { "name" : "Ganada", "price" : 5000, "dividend" : 0.05, "Up" : 0.05, "Down" : 0.06, "Information" : "ganada"}
+        { "name" : "ABC", "price" : 5000, "dividend" : 0.05, "Up" : 0.05, "Down" : 0.06, "Information" : "ganada"}
     ],
     "Stock" :
     [
