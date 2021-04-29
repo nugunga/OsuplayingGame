@@ -80,11 +80,11 @@ public class Coin extends Currency {
         else
             super.AveragePrice = (super.AveragePrice + super.Price) / 2.0;
 
-        // myaccount
         MyAccount.Money(-(long) (count * super.Price));
         if(!MyAccount.InvestCoin.contains(this))
             MyAccount.InvestCoin.add(this);
 
+        super.isBuy = true;
         return true;
     }
 
@@ -135,6 +135,7 @@ public class Coin extends Currency {
 
         // count
         this.Count -= Count;
+        super.isBuy = false;
         
         // count == 0
         if(this.Count == 0)

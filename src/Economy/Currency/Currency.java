@@ -1,7 +1,9 @@
 package Economy.Currency;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import Economy.MyAccount;
 import Economy.Currency.CurrencyType.CType;
 import Economy.Currency.Interface.IOther;
 import Economy.Currency.Interface.ISellAndBuy;
@@ -46,6 +48,7 @@ public abstract class Currency implements IOther, ISellAndBuy {
      * @return Standard Price
      */
     public long Price() { return this.Price; }
+    public void Price(long Money) { this.Price += Money; }
 
     /**
      * Recent Price Standard
@@ -95,10 +98,11 @@ public abstract class Currency implements IOther, ISellAndBuy {
      * Information Data
      */
     private List<String> InformationData;
-    
 
-    // protected long Count;
-    // public long Count() { return this.Count; }
+    protected boolean isBuy;
+    
+    private double Up;
+    private double Down;
 
     /**
      * Currency
@@ -119,17 +123,65 @@ public abstract class Currency implements IOther, ISellAndBuy {
         this.AveragePrice = 0;
         this.Dividend = dividend;
         this.InformationData = data;
+        this.Up = up;
+        this.Down = down;
+        this.isBuy = false;
     }
 
     @Override
     public void Information()
     {
+        List<String> list = new ArrayList<>();
 
+        // 이름
+        list.add(new String("이름 : " + this.Name));
+        // 타입
+        list.add(new String("타입 : " + this.Type));
+        list.add("\n가격 관련");
+        // 가격
+        list.add(new String("  현재 가격 : " + this.Type));
+        // 최근 가격
+        list.add(new String("  이전 가격 : " + this.RecentPrice));
+
+        if(this.isBuy)
+        {
+            // 구매 가격
+            list.add(new String("  구매 가격 : " + this.BuyPrice));
+            // 평균 가격
+            list.add(new String("  평단가 : " + this.AveragePrice));
+        }
+
+        // 화폐 설명
+        for (String string : InformationData)
+            list.add(string);
+        
+        System.out.println("화폐 정보");
+        Core.Prints.Show(list);
     }
 
     @Override
     public void Update()
     {
-        
-    }    
+        this.RecentPrice = this.Price;
+
+        long money = this.Price;
+        if(Math.random() > 5)
+        { // +
+            money *= Math.random() * this.Up;
+            this.Price(money);
+        }
+        else
+        { // -
+            money *= Math.random() * this.Down;
+            this.Price(-money);
+        }
+
+    }
+
+    @Override
+    public void UpdateDividend() {
+        long Money = this.Price;
+        Money *= this.Dividend;
+        MyAccount.Money(Money);
+    }
 }

@@ -50,10 +50,10 @@ public class Stock extends Currency {
         else
             super.AveragePrice = (super.AveragePrice + super.Price) / 2.0;
 
-        // myaccount
         MyAccount.Money(-(count * super.Price));
         if(!MyAccount.InvestStock.contains(this))
             MyAccount.InvestStock.add(this);
+        super.isBuy = true;
 
         return true;
     }
@@ -92,6 +92,7 @@ public class Stock extends Currency {
 
         // count
         this.Count -= count;
+        super.isBuy = false;
         
         // count == 0
         if(this.Count == 0)

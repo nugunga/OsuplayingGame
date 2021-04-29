@@ -66,6 +66,7 @@ public class Estate extends Currency {
 
         if(!MyAccount.InvestEstate.contains(this))
             MyAccount.InvestEstate.add(this);
+        super.isBuy = true;
         return true;
     }
 
@@ -105,6 +106,7 @@ public class Estate extends Currency {
 
         MyAccount.InvestEstate.remove(this);
         MyAccount.UseLoan(-this.Loan);
+        super.isBuy = false;
 
         return true;
     }
