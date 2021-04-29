@@ -12,7 +12,7 @@ public class SystemConsole {
     private int Years = 0;
     private String Difference = "Normal";
     private long DifferenceLong = 1000000;
-    public static boolean isdebug = true;
+    public static boolean debugMode = true;
 
     public void init()
     {
@@ -159,7 +159,7 @@ public class SystemConsole {
     public SystemConsole()
     {
         SystemConsole.sc = new Scanner(System.in);
-        if(!SystemConsole.isdebug)
+        if(!SystemConsole.debugMode)
             Hello();
         init();
         String cmd = "";

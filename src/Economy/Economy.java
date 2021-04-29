@@ -1,6 +1,5 @@
 package Economy;
 
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +15,17 @@ public class Economy {
     public static List<Stock> Stocks = new ArrayList<>();
     public static List<Estate> Estates = new ArrayList<>();
 
+    public enum LoadType { Full, Count, Percent, None };
+
     public Economy(long money)
     {
-        if(!SystemConsole.isdebug)
+        if(!SystemConsole.debugMode)
             new MyAccount(money);
         else
             new MyAccount(1000000);
         System.out.println("Test");
 
-        if(SystemConsole.isdebug)
+        if(SystemConsole.debugMode)
         {
             for (Coin coin : Coins)
                 System.out.println(coin.Name());
@@ -44,19 +45,19 @@ public class Economy {
             case Coin:
                 System.out.println("Coins");
                 for (Coin coin : Coins)
-                    list.add("  " + coin.Name() + " : " + coin.Price() + "(" + coin.RecentPrice() + ")");
+                    list.add(coin.Name() + " : " + coin.Price() + "(" + coin.RecentPrice() + ")");
                 Core.Prints.Show(list, 1);
                 break;
             case Stock:
                 System.out.println("Stocks");
                 for (Stock stock : Stocks)
-                    list.add("  " + stock.Name() + " : " + stock.Price() + "(" + stock.RecentPrice() + ")");
+                    list.add(stock.Name() + " : " + stock.Price() + "(" + stock.RecentPrice() + ")");
                 Core.Prints.Show(list, 1);
                 break;
             case Estate:
                 System.out.println("Estates");
                 for (Estate estate : Estates)
-                    list.add(new String("  " + estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + (estate.AveragePrice() - estate.Price()) + ")"));
+                    list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + (estate.AveragePrice() - estate.Price()) + ")"));
                 Core.Prints.Show(list, 1);
                 break;
             case None:
@@ -66,7 +67,6 @@ public class Economy {
 
     public void Buy()
     {
-        SystemConsole.ClearConsole();
         CType Target;
 
         String[] Currency = {
@@ -106,14 +106,14 @@ public class Economy {
         String[] BuyLoad = {
             "전체 구매 : 현재 구매할 수 있는 최대 개수 구입",
             "개수 구매 : 특정 개수만큼 구입",
-            "퍼센트 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
+            "비율 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
         };
         String[] BuyLoadCoin = {
             "전체 구매 : 현재 구매할 수 있는 최대 개수 구입",
-            "개수 구매 : 특정 실수만큼 구입 <코인은 실수개 구입 가능>",
-            "퍼센트 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
+            "개수 구매 : 특정 개수만큼 구입 <실수만큼 구입 가능>",
+            "비율 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
         };
-        int load;
+        LoadType load;
 
         if(Target != CType.Estate)
         {
@@ -128,68 +128,263 @@ public class Economy {
                 String cmd = SystemConsole.sc.next();
                 load = 
                 switch (cmd) {
-                    case "1", "전체", "풀", "Full" -> 1;
-                    case "2", "부분", "개수", "Count" -> 2;
-                    case "3", "퍼센트", "비율" -> 3;
-                    default -> 4;
+                    case "1", "전체", "풀", "Full" -> LoadType.Full;
+                    case "2", "부분", "개수", "Count" -> LoadType.Count;
+                    case "3", "퍼센트", "비율" -> LoadType.Percent;
+                    default -> LoadType.None;
                 };
                 
-                if(load != 4)
+                if(load != LoadType.None)
                     break;
                 SystemConsole.ClearConsole();
             }
             while (true);
         }
         else
-            load = 1;
+            load = LoadType.Full;
 
+        // 줄 바꿈
         System.out.println("");
 
         if(Target != CType.Estate)
         {
             switch (load)
             {
-                case 2:
+                case Full:
+                    BuyExecute(Target, index, load, 0.0);
+                    break;
+                case Count:
                     System.out.print("개수를 입력해주세요 : ");
-                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    BuyExecute(Target, index, load, SystemConsole.sc.nextDouble());
                     break;
-                case 3:
+                case Percent:
                     System.out.print("비율을 입력해주세요 : ");
-                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    BuyExecute(Target, index, load, SystemConsole.sc.nextDouble());
                     break;
+            default:
+                break;
             }
         }
         else
-            SellExecute(Target, index, load, 0.0);
+            BuyExecute(Target, index, load, 0.0);
     }
 
-    private boolean SellExecute(CType Target, int index, int load, double data)
+    private boolean BuyExecute(CType Target, int index, LoadType load, double data)
     {
         switch(Target)
         {
             case Coin:
                 switch(load)
                 {
-                    case 1: return Coins.get(index - 1).Buy();
-                    case 2: return Coins.get(index - 1).Buy(data);
-                    case 3: return Coins.get(index - 1).Buy((float)data);
+                    case Full: return Coins.get(index - 1).Buy();
+                    case Count: return Coins.get(index - 1).Buy(data);
+                    case Percent: return Coins.get(index - 1).Buy((float)data);
+                    default: return false;
                 }
             case Stock:
                 switch(load)
                 {
-                    case 1: return Stocks.get(index - 1).Buy();
-                    case 2: return Stocks.get(index - 1).Buy((long)data);
-                    case 3: return Stocks.get(index - 1).Buy((float)data);
+                    case Full: return Stocks.get(index - 1).Buy();
+                    case Count: return Stocks.get(index - 1).Buy((long)data);
+                    case Percent: return Stocks.get(index - 1).Buy((float)data);
+                    default: return false;
                 }
             case Estate:
                 return Estates.get(index - 1).Buy();
+            default:
+                return false;
         }
-        return false;
+    }
+
+    private void ShowTargetInvestPrice(CType Target)
+    {
+        List<String> list = new ArrayList<String>();
+        switch (Target) {
+            case Coin:
+                System.out.println("Coins");
+                for (Coin coin : MyAccount.InvestCoin)
+                    list.add(new String(coin.Name() + "("+ coin.Count() + ") : " + coin.Price() + "(" + coin.getSellMoney() + ", " + (coin.AveragePrice() - coin.Price()) + ")"));
+                Core.Prints.Show(list, 1);
+                break;
+            case Stock:
+                System.out.println("Stock");
+                for (Stock stock : MyAccount.InvestStock)
+                    list.add(new String(stock.Name() + "("+ stock.Count() + ") : " + stock.Price() + "(" + stock.getSellMoney() + ", " + (stock.AveragePrice() - stock.Price()) + ")"));
+                Core.Prints.Show(list, 1);
+                break;
+            case Estate:
+                System.out.println("Estate");
+                for (Estate estate : MyAccount.InvestEstate)
+                    list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.getSellMoney() + ", " + (estate.AveragePrice() - estate.Price()) + ")"));
+                Core.Prints.Show(list, 1);
+                break;
+            default:
+                return;
+        }
     }
 
     public void Sell()
     {
+        if(MyAccount.InvestCoin.size() + MyAccount.InvestStock.size() + MyAccount.InvestEstate.size() == 0)
+        {
+            System.out.println("보유하고 있는 자산은 없습니다.");
+            return;
+        }
 
+        CType Target;
+        boolean NoneFlag = false;
+
+        String[] Currency =
+        {
+            "코인 판매",
+            "주식 판매",
+            "땅이나 건물 판매"
+        };
+
+        if(MyAccount.InvestCoin.size() + MyAccount.InvestStock.size() + MyAccount.InvestEstate.size() > 0)
+        {
+            if(MyAccount.InvestCoin.size() > 0)
+                Currency[0] += " (판매 가능)";
+            if(MyAccount.InvestStock.size() > 0)
+                Currency[1] += " (판매 가능)";
+            if(MyAccount.InvestEstate.size() > 0)
+                Currency[2] += " (판매 가능)";
+        }
+
+        do
+        {
+            System.out.println("판매 메뉴(판매)");
+            Core.Prints.Show(Currency, 1);
+            System.out.print("입력해주세요 Ex) 1, 코인 : ");
+            String cmd = SystemConsole.sc.next();
+            Target =
+            switch (cmd) {
+                case "1", "코인", "코인 판매": 
+                    if(MyAccount.InvestCoin.size()== 0)
+                        NoneFlag = true;
+                    yield CType.Coin;
+                case "2", "주식", "주식 판매": 
+                    if(MyAccount.InvestStock.size()== 0)
+                        NoneFlag = true;
+                    yield CType.Stock;
+                case "3", "땅", "건물", "땅 판매", "건물 판매", "땅이나 건물 판매": 
+                    if(MyAccount.InvestEstate.size()== 0)
+                        NoneFlag = true;
+                    yield CType.Estate;
+                default: yield CType.None;
+            };
+            if(Target != CType.None)
+                break;
+            SystemConsole.ClearConsole();
+        }
+        while (true);
+        SystemConsole.ClearConsole();
+
+        if(NoneFlag)
+        {
+            System.out.println("보유하고 있는 자산은 없습니다.");
+            return;
+        }
+
+        ShowTargetInvestPrice(Target);
+        System.out.print("입력해주세요 Ex 1 : ");
+        int index = SystemConsole.sc.nextInt();
+        SystemConsole.ClearConsole();
+
+        String[] SellLoad =
+        {
+            "전체 판매 : 소지하고 있는 개수 전부 판매",
+            "개수 판매 : 특정 소지하고 있는 개수 판매",
+            "비율 판매 : 소지하고 있는 개수의 비율 만큼 판매"
+        };
+        String[] SellLoadCoin =
+        {
+            "전체 판매 : 소지하고 있는 개수 전부 판매",
+            "개수 판매 : 특정 소지하고 있는 개수 판매 <실수만큼 판매 가능>",
+            "비율 판매 : 소지하고 있는 개수의 비율 만큼 판매"
+        };
+
+        LoadType load;
+
+
+        if(Target != CType.Estate)
+        {
+            do
+            {
+                System.out.println("판매 방법을 선택해주세요");
+                if(Target == CType.Coin)
+                    Core.Prints.Show(SellLoadCoin, 1);
+                else
+                    Core.Prints.Show(SellLoad, 1);
+                System.out.print("입력해주세요 Ex) 1, 전체 >>> ");
+                String cmd = SystemConsole.sc.next();
+                load = 
+                switch (cmd)
+                {
+                    case "1", "전체", "Full", "풀" -> LoadType.Full;
+                    case "2", "개수", "부분" -> LoadType.Full;
+                    case "3", "비율", "퍼센트" -> LoadType.Full;
+                    default -> LoadType.None;
+                };
+
+                if(load != LoadType.None)
+                    break;
+                SystemConsole.ClearConsole();
+            }
+            while(true);
+        }
+        else
+            load = LoadType.Full;
+        
+        // 줄 바꿈
+        System.out.println("");
+
+        if(Target != CType.Estate)
+        {
+            switch (load)
+            {
+                case Full: SellExecute(Target, index, load, 0.0); break;
+                case Count: 
+                    System.out.print("개수를 입력해주세요 : ");
+                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    break;
+                case Percent:
+                    System.out.print("비율을 입력해주세요 : ");
+                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    break;
+                default: break;
+            }
+        }
+        else
+            SellExecute(Target, index, load, 0.0);
+    }
+
+    private boolean SellExecute(CType Target, int index, LoadType load, double data)
+    {
+        switch (Target)
+        {
+            case Coin:
+                switch (load)
+                {
+                    case Full: return Coins.get(index - 1).Sell();
+                    case Count: return Coins.get(index - 1).Sell(data);
+                    case Percent: return Coins.get(index - 1).Sell((float) data);
+                    default: return false;
+                }
+            case Stock:
+                switch (load)
+                {
+                    case Full: return Stocks.get(index - 1).Sell();
+                    case Count: return Stocks.get(index - 1).Sell((long) data);
+                    case Percent: return Stocks.get(index - 1).Sell((float) data);
+                    default: return false;
+                }
+            case Estate:
+                return Estates.get(index - 1).Sell();
+            default:
+                return false;
+        }
+        
     }
 
     public void InvestPrice()
@@ -212,7 +407,7 @@ public class Economy {
             System.out.println("Coins");
             List<String> list = new ArrayList<>();
             for (Stock stock : MyAccount.InvestStock)
-                list.add(new String("  " + stock.Name() + "("+ stock.Count() + ") : " + stock.Price() + "(" + stock.getSellMoney() + ", " + (stock.AveragePrice() - stock.Price()) + ")"));
+                list.add(new String(stock.Name() + "("+ stock.Count() + ") : " + stock.Price() + "(" + stock.getSellMoney() + ", " + (stock.AveragePrice() - stock.Price()) + ")"));
             Core.Prints.Show(list);
             System.out.println("\n");
         }
@@ -222,7 +417,7 @@ public class Economy {
             System.out.println("Stock");
             List<String> list = new ArrayList<>();
             for (Coin coin : MyAccount.InvestCoin)
-                list.add(new String("  " + coin.Name() + "(" + coin.getCount() + ") : " + coin.Price() + "(" + coin.getSellMoney() + ", " + (coin.AveragePrice() - coin.Price()) + ")"));
+                list.add(new String(coin.Name() + "(" + coin.getCount() + ") : " + coin.Price() + "(" + coin.getSellMoney() + ", " + (coin.AveragePrice() - coin.Price()) + ")"));
             Core.Prints.Show(list);
             System.out.println("\n");
         }
@@ -232,7 +427,7 @@ public class Economy {
             System.out.println("Estate");
             List<String> list = new ArrayList<>();
             for (Estate estate : MyAccount.InvestEstate)
-                list.add(new String("  " + estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.getSellMoney() + ", " + (estate.AveragePrice() - estate.Price()) + ")"));
+                list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.getSellMoney() + ", " + (estate.AveragePrice() - estate.Price()) + ")"));
             Core.Prints.Show(list);
             System.out.println("\n");
         }
@@ -258,7 +453,7 @@ public class Economy {
             System.out.println("Coins");
             List<String> list = new ArrayList<>();
             for (Stock stock : MyAccount.InvestStock)
-                list.add(new String("  " + stock.Name() + " : " + stock.Price() + "(" + (stock.AveragePrice() - stock.Price()) + ")"));
+                list.add(new String(stock.Name() + " : " + stock.Price() + "(" + (stock.AveragePrice() - stock.Price()) + ")"));
             Core.Prints.Show(list);
             System.out.println("");
         }
@@ -268,7 +463,7 @@ public class Economy {
             System.out.println("Stock");
             List<String> list = new ArrayList<>();
             for (Coin coin : MyAccount.InvestCoin)
-                list.add(new String("  " + coin.Name() + " : " + coin.Price() + "(" + (coin.AveragePrice() - coin.Price()) + ")"));
+                list.add(new String(coin.Name() + " : " + coin.Price() + "(" + (coin.AveragePrice() - coin.Price()) + ")"));
             Core.Prints.Show(list);
             System.out.println("");
         }
@@ -278,7 +473,7 @@ public class Economy {
             System.out.println("Estate");
             List<String> list = new ArrayList<>();
             for (Estate estate : MyAccount.InvestEstate)
-                list.add(new String("  " + estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + (estate.AveragePrice() - estate.Price()) + ")"));
+                list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + (estate.AveragePrice() - estate.Price()) + ")"));
             Core.Prints.Show(list);
             System.out.println("");
         }
@@ -299,9 +494,9 @@ public class Economy {
         for (Coin coin : Coins)
         {
             if(MyAccount.InvestCoin.contains(coin))
-                list.add(new String("  " + coin.Name() +"(" +coin.getCount() + ") : " + coin.Price() + "(" + coin.getSellMoney() + ", " + (coin.AveragePrice() - coin.Price()) + ")"));
+                list.add(new String(coin.Name() +"(" +coin.getCount() + ") : " + coin.Price() + "(" + coin.getSellMoney() + ", " + (coin.AveragePrice() - coin.Price()) + ")"));
             else
-                list.add(new String("  " + coin.Name() + " : " + coin.Price() + "(" + coin.RecentPrice() + ")"));
+                list.add(new String(coin.Name() + " : " + coin.Price() + "(" + coin.RecentPrice() + ")"));
         }
         Core.Prints.Show(list);
 
@@ -310,9 +505,9 @@ public class Economy {
         for (Stock stock : Stocks)
         {
             if(MyAccount.InvestStock.contains(stock))
-                list.add(new String("  " + stock.Name() + "(" + stock.Count() + ") : " + stock.Price() + "(" + stock.getSellMoney() + ", " + (stock.AveragePrice() - stock.Price()) + ")"));
+                list.add(new String(stock.Name() + "(" + stock.Count() + ") : " + stock.Price() + "(" + stock.getSellMoney() + ", " + (stock.AveragePrice() - stock.Price()) + ")"));
             else
-                list.add(new String("  " + stock.Name() + " : " + stock.Price() + "(" + stock.RecentPrice() + ")"));
+                list.add(new String(stock.Name() + " : " + stock.Price() + "(" + stock.RecentPrice() + ")"));
         }
         Core.Prints.Show(list);
         
@@ -322,9 +517,9 @@ public class Economy {
         for (Estate estate : Estates)
         {
             if(MyAccount.InvestEstate.contains(estate))
-                list.add(new String("  " + estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.getSellMoney() + ", " + (estate.AveragePrice() - estate.Price()) + ")"));
+                list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.getSellMoney() + ", " + (estate.AveragePrice() - estate.Price()) + ")"));
             else
-                list.add(new String("  " + estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.RecentPrice() + ")"));
+                list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.RecentPrice() + ")"));
         }
         Core.Prints.Show(list);
     }
