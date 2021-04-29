@@ -1,5 +1,6 @@
 package Economy;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,56 +108,83 @@ public class Economy {
             "개수 구매 : 특정 개수만큼 구입",
             "퍼센트 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
         };
+        String[] BuyLoadCoin = {
+            "전체 구매 : 현재 구매할 수 있는 최대 개수 구입",
+            "개수 구매 : 특정 실수만큼 구입 <코인은 실수개 구입 가능>",
+            "퍼센트 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
+        };
         int load;
 
-        do
+        if(Target != CType.Estate)
         {
-            System.out.println("구매 방법을 선택해주세요");
-            Core.Prints.Show(BuyLoad, 1);
-            System.out.print("입력해주세요 Ex) 1, 전체 >>> ");
-            String cmd = SystemConsole.sc.next();
-            load = 
-            switch (cmd) {
-                case "1", "전체", "풀", "Full" -> 1;
-                case "2", "부분", "개수", "Count" -> 2;
-                case "3", "퍼센트", "비율" -> 3;
-                default -> 4;
-            };
-            
-            if(load != 4)
-                break;
-            SystemConsole.ClearConsole();
+            do
+            {
+                System.out.println("구매 방법을 선택해주세요");
+                if(Target != CType.Coin)
+                    Core.Prints.Show(BuyLoad, 1);
+                else
+                    Core.Prints.Show(BuyLoadCoin, 1);    
+                System.out.print("입력해주세요 Ex) 1, 전체 >>> ");
+                String cmd = SystemConsole.sc.next();
+                load = 
+                switch (cmd) {
+                    case "1", "전체", "풀", "Full" -> 1;
+                    case "2", "부분", "개수", "Count" -> 2;
+                    case "3", "퍼센트", "비율" -> 3;
+                    default -> 4;
+                };
+                
+                if(load != 4)
+                    break;
+                SystemConsole.ClearConsole();
+            }
+            while (true);
         }
-        while (true);
-        SystemConsole.ClearConsole();
+        else
+            load = 1;
 
+        System.out.println("");
+
+        if(Target != CType.Estate)
+        {
+            switch (load)
+            {
+                case 2:
+                    System.out.print("개수를 입력해주세요 : ");
+                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    break;
+                case 3:
+                    System.out.print("비율을 입력해주세요 : ");
+                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    break;
+            }
+        }
+        else
+            SellExecute(Target, index, load, 0.0);
+    }
+
+    private boolean SellExecute(CType Target, int index, int load, double data)
+    {
         switch(Target)
         {
             case Coin:
                 switch(load)
                 {
-                    case 1: Coins.get(index - 1).Buy(); break;
-                    case 2: Coins.get(index - 1).Buy(SystemConsole.sc.nextLong()); break;
-                    case 3: Coins.get(index - 1).Buy(SystemConsole.sc.nextDouble()); break;
+                    case 1: return Coins.get(index - 1).Buy();
+                    case 2: return Coins.get(index - 1).Buy(data);
+                    case 3: return Coins.get(index - 1).Buy((float)data);
                 }
-                break;
             case Stock:
                 switch(load)
                 {
-                    case 1: Stocks.get(index - 1).Buy(); break;
-                    case 2: Stocks.get(index - 1).Buy(SystemConsole.sc.nextLong()); break;
-                    case 3: Stocks.get(index - 1).Buy(SystemConsole.sc.nextDouble()); break;
+                    case 1: return Stocks.get(index - 1).Buy();
+                    case 2: return Stocks.get(index - 1).Buy((long)data);
+                    case 3: return Stocks.get(index - 1).Buy((float)data);
                 }
-                break;
             case Estate:
-                switch(load)
-                {
-                    case 1: Estates.get(index - 1).Buy(); break;
-                    case 2: Estates.get(index - 1).Buy(SystemConsole.sc.nextLong()); break;
-                    case 3: Estates.get(index - 1).Buy(SystemConsole.sc.nextDouble()); break;
-                }
-                break;
+                return Estates.get(index - 1).Buy();
         }
+        return false;
     }
 
     public void Sell()

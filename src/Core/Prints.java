@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Prints {
 
-    private static int LineNum = 60;
+    private static int LineNum = 70;
 
     private static void ShowDivider()
     {
@@ -46,15 +46,6 @@ public class Prints {
             else
                 System.out.println("| " + string);
 
-
-        ShowDivider();
-    }
-    public static void Show(String[] str, int start, boolean isNone)
-    {
-        ShowDivider();
-
-        for (int i = start; str[i] != "None__"; i++)
-            System.out.println("| " + str[i]);
 
         ShowDivider();
     }
