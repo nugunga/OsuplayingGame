@@ -152,6 +152,7 @@ public class IO {
                     else
                         stockData += "},\n";
                 }
+                
 
                 for (int i = 0; i < MyAccount.InvestCoin.size(); i++)
                 {
