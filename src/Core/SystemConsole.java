@@ -10,10 +10,12 @@ public class SystemConsole {
     public static Scanner sc;
     private Economy Console;
 
-    private int Years = 0;
-    private String Difference = "Normal";
     private long DifferenceLong = 1000000;
+
     public static boolean debugMode = true;
+    public static int Years = 0;
+    public static long thisDay = 0;
+    public static String Difference = "Normal";
 
     public void init()
     {
@@ -159,9 +161,19 @@ public class SystemConsole {
 
     public SystemConsole()
     {
+        if(SystemConsole.debugMode)
+        {
+            init();
+            Economy.Stocks.get(0).Buy(0.5f);
+            Economy.Stocks.get(1).Buy(0.5f);
+            Economy.Coins.get(0).Buy(0.5f);
+            Economy.Coins.get(1).Buy(0.5f);
+            IO.GameSave("GameSaveName");
+            return;
+        }
+
         SystemConsole.sc = new Scanner(System.in);
-        if(!SystemConsole.debugMode)
-            Hello();
+        Hello();
         init();
         String cmd = "";
         String[] Menu = 
@@ -186,15 +198,15 @@ public class SystemConsole {
                 case "1", "시세": ClearConsole(); Console.showPrice(); ClearConsole(""); break;
                 case "2", "구매": ClearConsole(); Console.Buy(); ClearConsole(""); break;
                 case "3", "판매": ClearConsole(); Console.Sell(); ClearConsole(""); break;
-                case "4", "보유 자산" : ClearConsole(); Console.InvestPrice(); ClearConsole(""); break;
+                case "4", "보유자산" : ClearConsole(); Console.InvestPrice(); ClearConsole(""); break;
                 case "5", "X", "종료", "프로그램 종료": System.exit(0); sc.close(); break;
                 case "10" : ClearConsole(); Console.Update(UpdateType.All); ClearConsole(); break;
+                case "게임저장": ClearConsole(); IO.GameSave("Game"); ClearConsole(""); break;
                 default : ClearConsole("잘못된 멸령어입니다 : " + cmd + "\n");
             }
 
         } while(true);
     }
-
 
     public static void ClearConsole(String Message)
     {

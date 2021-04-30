@@ -23,18 +23,6 @@ public class Economy {
             new MyAccount(money);
         else
             new MyAccount(1000000);
-        System.out.println("Test");
-
-        if(SystemConsole.debugMode)
-        {
-            for (Coin coin : Coins)
-                System.out.println(coin.Name());
-            for (Stock coin : Stocks)
-                System.out.println(coin.Name());
-            for (Estate coin : Estates)
-                System.out.println(coin.Name());
-            Core.SystemConsole.ClearConsole("");
-        }
     }
 
     private void ShowTargetPrice(CType cType)
@@ -62,6 +50,40 @@ public class Economy {
                 break;
             case None:
                 return;
+        }
+    }
+
+    private boolean RangeOutCheck(CType type, boolean isMode, int index)
+    {
+        switch (type)
+        {
+            case Coin:
+                if(isMode)
+                    if(Coins.size() < index - 1)
+                        return true;
+                    else
+                        return false;
+                else
+                    if(MyAccount.InvestCoin.size() < index - 1)
+                        return true;
+                    else
+                        return false;
+            case Stock:
+                if(isMode)
+                    if(Stocks.size() < index - 1)
+                        return true;
+                    else
+                        return false;
+                else
+                    if(MyAccount.InvestStock.size() < index - 1)
+                        return true;
+                    else
+                        return false;
+            case Estate :
+                return false;
+            
+            default:
+                return true;
         }
     }
 
@@ -106,6 +128,12 @@ public class Economy {
         System.out.print("입력해주세요 Ex 1 : ");
         int index = SystemConsole.sc.nextInt();
         SystemConsole.ClearConsole();
+
+        if(RangeOutCheck(Target, true, index))
+        {
+            System.out.println("잘못된 인덱스");
+            return;
+        }
         
         String[] BuyLoad = {
             "전체 구매 : 현재 구매할 수 있는 최대 개수 구입",
@@ -304,6 +332,13 @@ public class Economy {
         System.out.print("입력해주세요 Ex 1 : ");
         int index = SystemConsole.sc.nextInt();
         SystemConsole.ClearConsole();
+
+
+        if(RangeOutCheck(Target, true, index))
+        {
+            System.out.println("잘못된 인덱스");
+            return;
+        }
 
         String[] SellLoad =
         {

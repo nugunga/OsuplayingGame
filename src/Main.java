@@ -1,3 +1,4 @@
+import Core.IO;
 import Core.SystemConsole;
 
 public class Main
