@@ -92,7 +92,7 @@ public abstract class Currency implements IOther, ISellAndBuy {
      * Get a Dividend
      * @return Dividend
      */
-    protected double Dividend() { return this.Dividend; }
+    public double Dividend() { return this.Dividend; }
 
     /**
      * Information Data
@@ -165,7 +165,7 @@ public abstract class Currency implements IOther, ISellAndBuy {
         this.RecentPrice = this.Price;
 
         long money = this.Price;
-        if(Math.random() > 5)
+        if(Math.random() * 10 > 5)
         { // +
             money *= Math.random() * this.Up;
             this.Price(money);

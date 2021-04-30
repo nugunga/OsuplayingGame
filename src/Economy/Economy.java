@@ -72,7 +72,8 @@ public class Economy {
         String[] Currency = {
             "코인 구매",
             "주식 구매",
-            "땅 및 건물 구매"
+            "땅 및 건물 구매",
+            "취소, 돌아가기"
         };
 
         do
@@ -91,6 +92,9 @@ public class Economy {
                 default -> CType.None;
             };
 
+            if(cmd.equals("4") || cmd.equals("X") || cmd.equals("취소") || cmd.equals("돌아가기"))
+                return;
+
             if(Target != CType.None)
                 break;
             SystemConsole.ClearConsole();
@@ -106,12 +110,14 @@ public class Economy {
         String[] BuyLoad = {
             "전체 구매 : 현재 구매할 수 있는 최대 개수 구입",
             "개수 구매 : 특정 개수만큼 구입",
-            "비율 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
+            "비율 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입",
+            "취소, 돌아가기"
         };
         String[] BuyLoadCoin = {
             "전체 구매 : 현재 구매할 수 있는 최대 개수 구입",
             "개수 구매 : 특정 개수만큼 구입 <실수만큼 구입 가능>",
-            "비율 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입"
+            "비율 구매 : 현재 구매할 수 있는 개수 중 비율 만큼 구입",
+            "취소, 돌아가기"
         };
         LoadType load;
 
@@ -133,6 +139,9 @@ public class Economy {
                     case "3", "퍼센트", "비율" -> LoadType.Percent;
                     default -> LoadType.None;
                 };
+                
+                if(cmd.equals("4") || cmd.equals("X") || cmd.equals("취소") || cmd.equals("돌아가기"))
+                    return;
                 
                 if(load != LoadType.None)
                     break;
@@ -238,7 +247,8 @@ public class Economy {
         {
             "코인 판매",
             "주식 판매",
-            "땅이나 건물 판매"
+            "땅이나 건물 판매",
+            "취소, 돌아가기"
         };
 
         if(MyAccount.InvestCoin.size() + MyAccount.InvestStock.size() + MyAccount.InvestEstate.size() > 0)
@@ -273,6 +283,10 @@ public class Economy {
                     yield CType.Estate;
                 default: yield CType.None;
             };
+
+            if(cmd.equals("4") || cmd.equals("X") || cmd.equals("취소") || cmd.equals("돌아가기"))
+                return;
+
             if(Target != CType.None)
                 break;
             SystemConsole.ClearConsole();
@@ -295,13 +309,15 @@ public class Economy {
         {
             "전체 판매 : 소지하고 있는 개수 전부 판매",
             "개수 판매 : 특정 소지하고 있는 개수 판매",
-            "비율 판매 : 소지하고 있는 개수의 비율 만큼 판매"
+            "비율 판매 : 소지하고 있는 개수의 비율 만큼 판매",
+            "취소, 돌아가기"
         };
         String[] SellLoadCoin =
         {
             "전체 판매 : 소지하고 있는 개수 전부 판매",
             "개수 판매 : 특정 소지하고 있는 개수 판매 <실수만큼 판매 가능>",
-            "비율 판매 : 소지하고 있는 개수의 비율 만큼 판매"
+            "비율 판매 : 소지하고 있는 개수의 비율 만큼 판매",
+            "취소, 돌아가기"
         };
 
         LoadType load;
@@ -326,6 +342,9 @@ public class Economy {
                     case "3", "비율", "퍼센트" -> LoadType.Percent;
                     default -> LoadType.None;
                 };
+                
+                if(cmd.equals("4") || cmd.equals("X") || cmd.equals("취소") || cmd.equals("돌아가기"))
+                    return;
 
                 if(load != LoadType.None)
                     break;
@@ -522,5 +541,43 @@ public class Economy {
                 list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.RecentPrice() + ")"));
         }
         Core.Prints.Show(list);
+    }
+
+    public enum UpdateType { Currency, Dividend, All };
+    /**
+     * 
+     * @param UpdateType true : 화폐 가격, false : 배당금
+     */
+    public void Update(UpdateType updateType)
+    {
+        switch (updateType)
+        {
+            case Currency: UpdateCurrency(); break;
+            case Dividend: UpdateDividend(); break;
+            case All: UpdateCurrency(); UpdateDividend();
+        }
+    }
+    
+    private void UpdateCurrency()
+    {
+        for (Coin coin : Coins)
+            coin.Update();
+        for (Stock stock : Stocks)
+            stock.Update();
+        for (Estate estate : Estates)
+            estate.Update();
+    }
+
+    private void UpdateDividend()
+    {
+        if(MyAccount.InvestCoin.size() + MyAccount.InvestStock.size() + MyAccount.InvestEstate.size() == 0)
+            return;
+        
+        for (Coin coin : MyAccount.InvestCoin)
+            coin.Dividend();
+        for (Stock stock : MyAccount.InvestStock)
+            stock.Dividend();
+        for (Estate estate : MyAccount.InvestEstate)
+            estate.Dividend();
     }
 }

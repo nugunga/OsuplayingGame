@@ -3,6 +3,7 @@ package Core;
 import java.util.Scanner;
 
 import Economy.Economy;
+import Economy.Economy.UpdateType;
 
 public class SystemConsole {
     
@@ -187,6 +188,7 @@ public class SystemConsole {
                 case "3", "판매": ClearConsole(); Console.Sell(); ClearConsole(""); break;
                 case "4", "보유 자산" : ClearConsole(); Console.InvestPrice(); ClearConsole(""); break;
                 case "5", "X", "종료", "프로그램 종료": System.exit(0); sc.close(); break;
+                case "10" : ClearConsole(); Console.Update(UpdateType.All); ClearConsole(); break;
                 default : ClearConsole("잘못된 멸령어입니다 : " + cmd + "\n");
             }
 
