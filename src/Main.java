@@ -1,4 +1,3 @@
-import Core.IO;
 import Core.SystemConsole;
 
 public class Main
@@ -16,8 +15,19 @@ public class Main
             
             Currency test = (Currency) coin;
             System.out.println(test.Type().TypeString());
+
+            됨
         */
-    }
+        
+        /*
+            포맷 스트링 공격 테스트
+            
+            String format = "%70s";
+            System.out.printf(format, "test");
+
+            됨
+        */
+        }
 
     public static void main(String[] args)
     {

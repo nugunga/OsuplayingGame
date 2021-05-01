@@ -26,6 +26,8 @@ public class MyAccount {
     public static long UseLoan() { return MyAccount.UseLoan; }
     public static void UseLoan(long money) { MyAccount.UseLoan += money; }
 
+    public static List<String> Account = new ArrayList<String>();
+
 
     public enum CreditRating
     {
@@ -45,6 +47,11 @@ public class MyAccount {
         InvestCoin = new ArrayList<>();
         InvestStock = new ArrayList<>();
         InvestEstate = new ArrayList<>();
+        Account.add(new String
+        (
+            "입금 | " + "시스템으로부터 " + money + "원 만큼 받았습니다. | " +
+            money + " ( 잔액 : " + money + ")"
+        ));
         Update();
     }
 
@@ -93,5 +100,5 @@ public class MyAccount {
         }
     }
 
-
+    
 }

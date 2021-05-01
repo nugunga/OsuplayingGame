@@ -55,6 +55,7 @@ public class Stock extends Currency {
             MyAccount.InvestStock.add(this);
         super.isBuy = true;
 
+        super.AccountUpdate("출금", (long) (count * super.Price));
         return true;
     }
 
@@ -71,7 +72,7 @@ public class Stock extends Currency {
 
     @Override
     public boolean Sell() {
-        return Buy(this.Count);
+        return Sell(this.Count);
     }
 
     @Override
@@ -106,6 +107,7 @@ public class Stock extends Currency {
             // Average
             super.AveragePrice = 0;
         }
+        super.AccountUpdate("입금", (long) (Count * super.Price));
         return true;
     }
 

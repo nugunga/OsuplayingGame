@@ -85,6 +85,7 @@ public class Coin extends Currency {
             MyAccount.InvestCoin.add(this);
 
         super.isBuy = true;
+        super.AccountUpdate("출금", (long) (count * super.Price));
         return true;
     }
 
@@ -149,6 +150,7 @@ public class Coin extends Currency {
             // Average
             super.AveragePrice = 0;
         }
+        super.AccountUpdate("입금", (long) (Count * super.Price));
         return true;
     }
 

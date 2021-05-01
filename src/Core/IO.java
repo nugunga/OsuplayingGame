@@ -1,21 +1,19 @@
 package Core;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import Economy.Economy;
-import Economy.MyAccount;
 import Economy.Currency.Coin;
 import Economy.Currency.Estate;
 import Economy.Currency.Stock;
@@ -23,7 +21,6 @@ import Economy.Currency.Stock;
 public class IO {
 
     private String Currency_File_Path = "Resource/Currency.json";
-    private String Save_File_Path = "Resource/SaveData.json";
     
     public static List<String> SaveData_List = new ArrayList<String>();
 
@@ -33,11 +30,12 @@ public class IO {
         try
         {
             Currency_List = Files.readAllLines(Paths.get(Currency_File_Path), StandardCharsets.UTF_8);
-            SaveData_List = Files.readAllLines(Paths.get(Save_File_Path), StandardCharsets.UTF_8);
         }
         catch(IOException e)
         {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, ("(특정 파일 :" + this.Currency_File_Path + ")을 열 수 없습니다."), "파일 읽기 오류", JOptionPane.ERROR_MESSAGE);
+            // e.getStackTrace();
+            System.exit(0);
         }
         
         // 화폐 정보 설정
@@ -118,121 +116,5 @@ public class IO {
         {
             e.getStackTrace();
         }
-    }
-
-
-
-    public static void GameSave(String GameSaveName)
-    {
-        int index = 0;
-        // End 직전의 데이터를 찾아야함
-        for (String string : SaveData_List) {
-            if(string.equals("        {\"cmd\" : \"end\"}"))
-            {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date();
-
-                // 현재 가지고 있는 정보를 처리
-                String stockData = "";
-                String coinData = "";
-                String estateData = "";
-                for (int i = 0; i < MyAccount.InvestStock.size(); i++)
-                {
-                    Stock stock = MyAccount.InvestStock.get(i);
-
-                    stockData += "                        {";
-                    stockData += "\"name\" : \"" + stock.Name() + "\", ";
-                    stockData += "\"price\" : " + stock.Price() + ", ";
-                    stockData += "\"count\" : " + stock.Count() + ", ";
-                    stockData += "\"recentPrice\" : " + stock.RecentPrice() + ", ";
-                    stockData += "\"price\" : " + stock.AveragePrice() + " ";
-
-                    if(i + 1 == MyAccount.InvestStock.size())
-                        stockData += "}";
-                    else
-                        stockData += "},\n";
-                }
-                
-
-                for (int i = 0; i < MyAccount.InvestCoin.size(); i++)
-                {
-                    Coin coin = MyAccount.InvestCoin.get(i);
-
-                    coinData += "                        {";
-                    coinData += "\"name\" : \"" + coin.Name() + "\", ";
-                    coinData += "\"price\" : " + coin.Price() + ", ";
-                    coinData += "\"count\" : " + coin.Count() + ", ";
-                    coinData += "\"recentPrice\" : " + coin.RecentPrice() + ", ";
-                    coinData += "\"price\" : " + coin.AveragePrice() + " ";
-
-                    if(i + 1 == MyAccount.InvestCoin.size())
-                        coinData += "}";
-                    else
-                        coinData += "},\n";
-                }
-
-                SaveData_List.add(index, new String
-                (
-                    "        " +
-                    "{\n" +
-                    "                \"cmd\" : \"GameSave\",\n" + 
-                    "                \"time\" : \"" + format.format(date) + "\",\n" +
-                    "                \"name\" : \"" + GameSaveName + "\",\n" +
-                    "                \"GameDate\" : \"" + SystemConsole.thisDay + "\",\n" +
-                    "                \"GameEndDate\" : \"" + SystemConsole.Years + "\",\n" +
-                    "                \"GameDifference\" : \"" + SystemConsole.Difference + "\"," +
-
-
-                    // 현금 관련
-                    "\n                \"Money : \"" + MyAccount.Money() + "\",\n" +
-                    "                \"MyLoan : \"" + MyAccount.Loan() + "\",\n" +
-
-                    // 주식 관련 정보들
-                    "\n                \"Stocks\" :" +
-                    "\n                [" + 
-                    "\n"                  +  stockData +
-                    "\n                ]," +
-                    
-                    // 코인 관련 정보들
-                    "\n                \"Coins\" :" +
-                    "\n                [" + 
-                    "\n"                  +  coinData +
-                    "\n                ]," +
-
-                    // 땅 관련 정보들
-                    "\n                \"Estate\" :" +
-                    "\n                [" + 
-                    "\n"                  +  estateData +
-                    "\n                ]" +
-                    "\n        },"
-                ));
-                break;
-            }
-            else
-                index++;
-        }
-
-        for (String string : SaveData_List) {
-            System.out.println(string);
-        }
-
-        // try
-        // {
-        //     String temp = "";
-        //     for (String string : SaveData_List)
-        //         temp += string;
-
-        //     JSONParser jsp = new JSONParser();
-        //     JSONObject SaveData = (JSONObject) jsp.parse(temp);
-
-        //     FileWriter FileWriter = new FileWriter(Save_File_Path);
-        //     FileWriter.write(SaveData.toJSONString());
-        //     FileWriter.flush();
-        //     FileWriter.close();
-        // }
-        // catch (Exception e)
-        // {
-        //     e.getStackTrace();
-        // }
     }
 }

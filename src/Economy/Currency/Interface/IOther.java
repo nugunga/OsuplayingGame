@@ -10,4 +10,5 @@ public interface IOther {
     public void UpdateDividend();
     public void Information();
     public long getSellMoney();
+    public void AccountUpdate(String isBuyAndSell, long money);
 }

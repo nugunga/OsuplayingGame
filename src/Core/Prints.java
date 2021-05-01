@@ -3,7 +3,8 @@ import java.util.List;
 
 public class Prints {
 
-    private static int LineNum = 70;
+    private static int LineNum = 80;
+    public static int LineNum() { return Prints.LineNum; }
 
     private static void ShowDivider()
     {

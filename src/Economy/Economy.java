@@ -16,6 +16,7 @@ public class Economy {
     public static List<Estate> Estates = new ArrayList<>();
 
     public enum LoadType { Full, Count, Percent, None };
+    public enum UpdateType { Currency, Dividend, All };
 
     public Economy(long money)
     {
@@ -85,6 +86,82 @@ public class Economy {
             default:
                 return true;
         }
+    }
+
+    private void payslip(boolean isBuyAndSell, boolean func, LoadType load, double count, CType type, int index)
+    {
+        List<String> data = new ArrayList<String>();
+
+        // 구매
+        if(isBuyAndSell)
+        {
+            switch (type) {
+                case Coin:
+                    Coin coin = Coins.get(index - 1);
+                    data.add("이름 : " + coin.Name());
+                    data.add("타입 : " + coin.Type().TypeString());
+                    data.add("구매 방법 : " + (load == LoadType.Full ? "전체 구매" : load == LoadType.Count ? "개수 구매" : "비율 구매"));
+                    data.add("구매 가격 : " + coin.Price());
+                    data.add("구매 개수 : " + count);
+                    data.add("구매 개수 : " + coin.Count());
+                    break;
+                case Stock:
+                    Stock stock = Stocks.get(index - 1);
+                    data.add("이름 : " + stock.Name());
+                    data.add("타입 : " + stock.Type().TypeString());
+                    data.add("구매 방법 : " + (load == LoadType.Full ? "전체 구매" : load == LoadType.Count ? "개수 구매" : "비율 구매"));
+                    data.add("구매 가격 : " + stock.Price());
+                    data.add("구매 개수 : " + count);
+                    data.add("전체 개수 : " + stock.Count());
+                    break;
+                case Estate:
+                    Estate estate = Estates.get(index - 1);
+                    data.add("이름 : " + estate.Name());
+                    data.add("타입 : " + estate.Type().TypeString());
+                    data.add("건물 타입 : " + ((Estate) estate).EstateType());
+                    data.add("구매 방법 : " + (load == LoadType.Full ? "전체 구매" : load == LoadType.Count ? "개수 구매" : "비율 구매"));
+                    data.add("구매 가격 : " + estate.Price());
+                    break;
+                default: break;
+            }
+        }
+        // 판매
+        else
+        {
+            switch (type) {
+                case Coin:
+                    Coin coin = Coins.get(index - 1);
+                    data.add("이름 : " + coin.Name());
+                    data.add("타입 : " + coin.Type().TypeString());
+                    data.add("판매 방법 : " + (load == LoadType.Full ? "전체 판매" : load == LoadType.Count ? "개수 판매" : "비율 판매"));
+                    data.add("판매 가격 : " + coin.Price());
+                    data.add("판매 개수 : " + count);
+                    data.add("전체 개수 : " + coin.Count());
+                    break;
+                case Stock:
+                    Stock stock = Stocks.get(index - 1);
+                    data.add("이름 : " + stock.Name());
+                    data.add("타입 : " + stock.Type().TypeString());
+                    data.add("판매 방법 : " + (load == LoadType.Full ? "전체 판매" : load == LoadType.Count ? "개수 판매" : "비율 판매"));
+                    data.add("판매 가격 : " + stock.Price());
+                    data.add("판매 개수 : " + count);
+                    data.add("전체 개수 : " + stock.Count());
+                    break;
+                case Estate:
+                    Estate estate = Estates.get(index - 1);
+                    data.add("이름 : " + estate.Name());
+                    data.add("타입 : " + estate.Type().TypeString());
+                    data.add("건물 타입 : " + ((Estate) estate).EstateType());
+                    data.add("판매 방법 : " + (load == LoadType.Full ? "전체 판매" : load == LoadType.Count ? "개수 판매" : "비율 판매"));
+                    data.add("판매 가격 : " + estate.Price());
+                    break;
+                default: break;
+            }
+        }
+
+        Core.Prints.Show(data);
+        String format = "%" + (Core.Prints.LineNum()-10) + "s";
+        System.out.printf(format, (func ? "거래 승인 (승인 완료)" : " 거래 실패 (승인 거부)"));
     }
 
     public void Buy()
@@ -182,28 +259,62 @@ public class Economy {
 
         // 줄 바꿈
         System.out.println("");
-
+        double in;
         if(Target != CType.Estate)
         {
             switch (load)
             {
                 case Full:
-                    BuyExecute(Target, index, load, 0.0);
+                    payslip
+                    (
+                        true,
+                        BuyExecute(Target, index, load, 0.0),
+                        load,
+                        0.0,
+                        Target,
+                        index
+                    );
                     break;
                 case Count:
                     System.out.print("개수를 입력해주세요 : ");
-                    BuyExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    in = SystemConsole.sc.nextDouble();
+                    payslip
+                    (
+                        true,
+                        BuyExecute(Target, index, load, in),
+                        load,
+                        in, 
+                        Target,
+                        index
+                    );
                     break;
                 case Percent:
                     System.out.print("비율을 입력해주세요 : ");
-                    BuyExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    in = SystemConsole.sc.nextDouble();
+                    payslip
+                    (
+                        true,
+                        BuyExecute(Target, index, load, in),
+                        load,
+                        in, 
+                        Target,
+                        index
+                    );
                     break;
             default:
                 break;
             }
         }
         else
-            BuyExecute(Target, index, load, 0.0);
+            payslip
+            (
+                true,
+                BuyExecute(Target, index, load, 0.0),
+                load,
+                0.0, 
+                Target,
+                index
+            );
     }
 
     private boolean BuyExecute(CType Target, int index, LoadType load, double data)
@@ -392,25 +503,62 @@ public class Economy {
         
         // 줄 바꿈
         System.out.println("");
+        double in;
 
         if(Target != CType.Estate)
         {
             switch (load)
             {
-                case Full: SellExecute(Target, index, load, 0.0); break;
+                case Full: 
+                    payslip
+                    (
+                        false,
+                        SellExecute(Target, index, load, 0.0),
+                        load,
+                        0.0, 
+                        Target,
+                        index
+                    );
+                    break;
                 case Count: 
                     System.out.print("개수를 입력해주세요 : ");
-                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    in = SystemConsole.sc.nextDouble();
+                    payslip
+                    (
+                        false,
+                        SellExecute(Target, index, load, in),
+                        load,
+                        in, 
+                        Target,
+                        index
+                    );
                     break;
                 case Percent:
                     System.out.print("비율을 입력해주세요 : ");
-                    SellExecute(Target, index, load, SystemConsole.sc.nextDouble());
+                    in = SystemConsole.sc.nextDouble();
+                    payslip
+                    (
+                        false,
+                        SellExecute(Target, index, load, in),
+                        load,
+                        in, 
+                        Target,
+                        index
+                    );
                     break;
                 default: break;
             }
         }
         else
-            SellExecute(Target, index, load, 0.0);
+            payslip
+            (
+                false,
+                SellExecute(Target, index, load, 0.0),
+                load,
+                0.0, 
+                Target,
+                index
+            );
     }
 
     private boolean SellExecute(CType Target, int index, LoadType load, double data)
@@ -578,11 +726,6 @@ public class Economy {
         Core.Prints.Show(list);
     }
 
-    public enum UpdateType { Currency, Dividend, All };
-    /**
-     * 
-     * @param UpdateType true : 화폐 가격, false : 배당금
-     */
     public void Update(UpdateType updateType)
     {
         switch (updateType)
@@ -614,5 +757,165 @@ public class Economy {
             stock.Dividend();
         for (Estate estate : MyAccount.InvestEstate)
             estate.Dividend();
+    }
+
+    public void Information()
+    {
+        String[] InfoMenu =
+        {
+            "이 게임에 대한 정보",
+            "화폐에 대한 정보",
+            "입출금 내역 정보",
+        };
+        int mode;
+
+        do
+        {
+            System.out.println("정보 메뉴");
+            Core.Prints.Show(InfoMenu, 1);
+            System.out.println("입력해주세요 >> ");
+            mode =
+            switch (SystemConsole.sc.next())
+            {
+                case "1", "게임" -> 1;
+                case "2", "화폐" -> 2;
+                case "3", "로그", "입출금" -> 3;
+                default -> -1;
+            };
+
+            if(mode != -1)
+                break;
+            SystemConsole.ClearConsole();
+        }
+        while (true);
+        SystemConsole.ClearConsole();
+
+        String[] GameInfo = {
+            // 게임 전반적인 정보
+            "게임 이름 : OsuIsGaming(오수는 게임중)",
+            "팀 이름   : 2인 개발팀",
+            "게임 버전 : 2021-05-01_A00_1",
+            "게임 제작 소요 시간 : 3일(총 28시간)",
+            "",
+
+            // 이 게임의 정보
+            "게임 난이도 : " + SystemConsole.Difference,
+            "게임 엔딩일 : " + SystemConsole.Years + " ( " + (SystemConsole.Years - SystemConsole.thisDay) + " 남음 )",
+            "현재 게임일 : " + SystemConsole.thisDay,
+            "화폐 가격 갱신일 : " + SystemConsole.dayTime,
+            "화폐 갱신 시간   : " + SystemConsole.format.format(SystemConsole.NextUpdateTime.getTime()),
+            "배당금 분배 갱신일 : " + SystemConsole.UpdateDividend
+        };
+
+        String[] Currency =
+        {
+            "코인 정보 보기",
+            "주식 정보 보기",
+            "땅 및 건물 정보 보기"
+        };
+
+        CType Target = CType.None;
+
+        // todo 일단 각 정보를 선택하는 것까지 제작함
+        switch (mode) {
+            case 1: Core.Prints.Show(GameInfo); break;
+            case 2:
+                do
+                {
+                    System.out.println("대상체의 정보");
+                    Core.Prints.Show(Currency, 1);
+                    System.out.print("입력해주세요 Ex 1, 코인 : ");
+                    Target = 
+                    switch (SystemConsole.sc.next()) {
+                        case "1", "코인" -> CType.Coin;
+                        case "2", "주식" -> CType.Stock;
+                        case "3", "땅", "건물" -> CType.Estate;
+                        default -> CType.None;
+                    };
+
+                    if(Target != CType.None)
+                        break;
+                    SystemConsole.ClearConsole();
+                }
+                while (true);
+                
+                System.out.println("");
+                ShowTarget(Target);
+                System.out.print("화폐 번호를 입력해주세요");
+                int index = SystemConsole.sc.nextInt();
+                SystemConsole.ClearConsole();
+                List<String> InvestData = new ArrayList<>();
+
+                switch (Target)
+                {
+                    case Coin:
+                        // 코인 정보 보기
+                        Coins.get(index - 1).Information();
+                        
+                        System.out.println("투자 내역\n");
+                        for (String string : MyAccount.Account)
+                        {
+                            for (Coin coin : Coins)
+                                if(string.contains(coin.Name()))
+                                    InvestData.add(string);
+                        }
+                        Core.Prints.Show(InvestData, 1);
+                        break;
+                    case Stock:
+                        Stocks.get(index - 1).Information();
+                        
+                        System.out.println("투자 내역\n");
+                        for (String string : MyAccount.Account)
+                        {
+                            for (Stock stock : Stocks)
+                                if(string.contains(stock.Name()))
+                                    InvestData.add(string);
+                        }
+                        Core.Prints.Show(InvestData, 1);
+                        break;
+                    case Estate:
+                        Estates.get(index - 1).Information();
+
+                        System.out.println("투자 내역\n");
+                        for (String string : MyAccount.Account)
+                        {
+                            for (Estate estate : Estates)
+                                if(string.contains(estate.Name()))
+                                    InvestData.add(string);
+                        }
+                        Core.Prints.Show(InvestData, 1);
+                        break;
+                    default: break;
+                }
+                break;
+            case 3:
+                System.out.println("투자 내역");
+                Core.Prints.Show(MyAccount.Account, 1);
+                break;
+        }
+
+    }
+
+    private void ShowTarget(CType Target)
+    {
+        List<String> list = new ArrayList<>();
+
+        switch (Target)
+        {
+            case Coin:
+                for (Coin coin : Coins)
+                    list.add(new String(coin.Name()));
+                break;
+            case Stock:
+                for (Stock stock : Stocks)
+                    list.add(new String(stock.Name()));
+                break;
+            case Estate:
+                for (Estate estate : Estates)
+                    list.add(new String(estate.Name()));
+                break;
+            default: return;
+        }
+        Core.Prints.Show(list, 1);
     }
 }
