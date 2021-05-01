@@ -1,14 +1,11 @@
 ## Getting Started
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+오수는 게임중 깃헙에 오신것을 환영합니다 여기는 오수는 게임중의 소스 파일 및 프로그램 파일이 있습니다.
 
 ## Folder Structure
 
-The workspace contains two folders by default, where:
+현재의 작업공간은 다음과 같이 이루어져 있습니다.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-## Dependency Management
-
-The `JAVA DEPENDENCIES` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-pack/blob/master/release-notes/v0.9.0.md#work-with-jar-files-directly).
+- `Resource`: 게임에서 사용하는 리소스들이 있습니다.
+- `src`: 게임의 소스들이 있습니다.
+- `lib`: 게임의 관계 라이브러리가 있습니다

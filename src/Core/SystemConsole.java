@@ -80,7 +80,26 @@ public class SystemConsole {
                     // 게임 종료
                     if(SystemConsole.Years == SystemConsole.thisDay)
                     {
-                        // todo 게임 종료 구현
+                        ClearConsole();
+                        // 게임을 하던 중의 것을 묻기
+                        System.out.println("지금까지 투자 내역");
+                        for (String str : MyAccount.Account)
+                            System.out.println(str);
+
+                        System.out.println("현재 투자하고 있는 상품들");
+                        Console.InvestPrice();
+
+                        System.out.println("현금 : " + MyAccount.Money());
+                        System.out.println("자산 총액 : " + MyAccount.AllMoney());
+
+                        ShowTime();
+
+                        // 게임에 관해서 묻기
+                        System.out.println("게임은 즐거웠나요?");
+                        ClearConsole("게임 재밌었습니다.");
+
+                        ClearConsole("");
+                        System.exit(0);
                     }
                 }
             }
@@ -280,7 +299,7 @@ public class SystemConsole {
     {
         SystemConsole.sc = new Scanner(System.in);
         Hello();
-        init();
+        init(); SystemConsole.Years = 1;
         String cmd = "";
         String[] Menu = 
         {
