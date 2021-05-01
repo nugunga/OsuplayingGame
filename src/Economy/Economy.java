@@ -719,9 +719,9 @@ public class Economy {
         for (Estate estate : Estates)
         {
             if(MyAccount.InvestEstate.contains(estate))
-                list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.getSellMoney() + ", " + (estate.AveragePrice() - estate.Price()) + ")"));
+                list.add(new String(estate.Name() + "("+ estate.EstateType().toString() + ") : " + estate.Price() + "(" + estate.getSellMoney() + ", " + (estate.AveragePrice() - estate.Price()) + ")"));
             else
-                list.add(new String(estate.Name() + "("+ estate.Type().Type().toString() + ") : " + estate.Price() + "(" + estate.RecentPrice() + ")"));
+                list.add(new String(estate.Name() + "("+ estate.EstateType().toString() + ") : " + estate.Price() + "(" + estate.RecentPrice() + ")"));
         }
         Core.Prints.Show(list);
     }
@@ -877,14 +877,17 @@ public class Economy {
                     case Estate:
                         Estates.get(index - 1).Information();
 
-                        System.out.println("투자 내역\n");
                         for (String string : MyAccount.Account)
                         {
                             for (Estate estate : Estates)
                                 if(string.contains(estate.Name()))
                                     InvestData.add(string);
                         }
-                        Core.Prints.Show(InvestData, 1);
+                        if(InvestData.size() > 0)
+                        {
+                            System.out.println("투자 내역\n");   
+                            Core.Prints.Show(InvestData, 1);
+                        }
                         break;
                     default: break;
                 }
