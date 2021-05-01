@@ -299,7 +299,7 @@ public class SystemConsole {
     {
         SystemConsole.sc = new Scanner(System.in);
         Hello();
-        init(); SystemConsole.Years = 1;
+        init();
         String cmd = "";
         String[] Menu = 
         {
